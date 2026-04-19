@@ -1,1 +1,7 @@
-{"version": 2}
+{
+  "version": 2,
+  "functions": {
+    "api/health.py": { "runtime": "python3.12" },
+    "api/webhook.py": { "runtime": "python3.12" }
+  }
+}
