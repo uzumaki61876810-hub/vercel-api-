@@ -1,0 +1,4 @@
+stripe==8.11.0
+sendgrid==6.11.0
+reportlab==4.2.2
+python-dateutil==2.9.0
