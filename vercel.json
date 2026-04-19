@@ -1,7 +1,6 @@
 {
   "version": 2,
-  "functions": {
-    "api/health.py": { "runtime": "python3.12" },
-    "api/webhook.py": { "runtime": "python3.12" }
-  }
+  "builds": [
+    { "src": "api/*.py", "use": "@vercel/python" }
+  ]
 }
