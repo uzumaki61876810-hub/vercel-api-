@@ -12,6 +12,7 @@ from reportlab.platypus import (
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.platypus.flowables import HRFlowable
 import math, datetime, os
 
@@ -33,15 +34,26 @@ def _find_font(candidates):
     for p in candidates:
         if os.path.exists(p):
             return p
-    return candidates[0]  # フォールバック（エラーになるが明示的）
+    return None
 
-pdfmetrics.registerFont(TTFont('Gothic',  _find_font(_FONT_CANDIDATES)))
-pdfmetrics.registerFont(TTFont('Gothic2', _find_font(_FONT_B_CANDIDATES)))
-
-FONT      = 'Gothic'
-FONT_B    = 'Gothic2'   # 太字代替（実際は同じウェイトなので文字サイズで差別化）
-
-# ── カラーパレット ──
+def _register_fonts():
+    ttf_path = _find_font(_FONT_CANDIDATES)
+    ttf_b_path = _find_font(_FONT_B_CANDIDATES)
+    if ttf_path:
+        pdfmetrics.registerFont(TTFont('Gothic', ttf_path))
+        pdfmetrics.registerFont(TTFont('Gothic2', ttf_b_path or ttf_path))
+        return 'ttf'
+    else:
+        pdfmetrics.registerFont(UnicodeCIDFont('HeiseiKakuGo-W5'))
+        pdfmetrics.registerFont(UnicodeCIDFont('HeiseiMin-W3'))
+        return 'cid'
+_font_mode = _register_fonts()
+if _font_mode == 'cid':
+    FONT = 'HeiseiKakuGo-W5'
+    FONT_B = 'HeiseiKakuGo-W5'
+else:
+    FONT = 'Gothic'
+    FONT_B = 'Gothic2'  # 太字代替（実際は同じウェイトなので文字サイズで差別化）
 NAVY      = colors.HexColor('#0D1B2A')
 GOLD      = colors.HexColor('#C9A84C')
 GOLD_L    = colors.HexColor('#E8C97A')
